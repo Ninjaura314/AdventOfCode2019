@@ -38,11 +38,11 @@ while current_index < len(data):
                 current_index += 3
             continue
         elif operator == 7:
-            data[data[current_index+3]] = int(data[current_index+1]<data[current_index+2])
+            data[data[current_index+3]] = int(data[data[current_index+1]]<data[data[current_index+2]])
             current_index += 4
             continue
         elif operator == 8:
-            data[data[current_index+3]] = int(data[current_index+1]==data[current_index+2])
+            data[data[current_index+3]] = int(data[data[current_index+1]]==data[data[current_index+2]])
             current_index += 4
             continue
     operator_string = str(operator)
