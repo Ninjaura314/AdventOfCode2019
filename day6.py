@@ -2,8 +2,6 @@ with open('day6input.txt') as f:
     lines = f.read().split('\n')[:-1]
 orbits = {}
 bodies = []
-subs = []
-pars = []
 for line in lines:
     base, orbiter = line.split(')')
     if base not in bodies:
@@ -15,9 +13,7 @@ for line in lines:
     orbits[base].append(orbiter)
 to_check = []
 for body in bodies:
-    if body not in orbits.keys():
-        subs.append(body)
-    else:
+    if body in orbits.keys():
         to_check.append(body)
 def parse_map(start_point):
     if start_point not in orbits.keys():
@@ -62,7 +58,4 @@ possible_parents = []
 for y in you_parents:
     if y in santa_parents:
         possible_parents.append(y)
-sum_of_parents = []
-for p in possible_parents:
-    sum_of_parents.append(you_parents.index(p) + santa_parents.index(p))
-print(min(sum_of_parents))
+print(min([you_parents.index(p) + santa_parents.index(p) for p in possible_parents]))
