@@ -2,6 +2,7 @@ with open('day7input.txt') as f:
     nums = [int(i) for i in f.read().split(',')]
 indexes = [0 for i in range(5)]
 amp_outputs = [[] for i in range(5)]
+input_queue = [[] for i in range(5)]
 def intcode(data, phase_num, input_num, amp_num, part_two=False, init_value=False, loops=0):
     current_index = indexes[amp_num]
     first_time = True
@@ -10,66 +11,6 @@ def intcode(data, phase_num, input_num, amp_num, part_two=False, init_value=Fals
         operator = data[current_index]
         if operator == 99 or operator == 99999:
             break
-        if operator < 10:
-            if operator == 1:
-                data[data[current_index+3]] = data[data[current_index+1]] + data[data[current_index+2]]
-                current_index += 4
-                continue
-            elif operator == 2:
-                data[data[current_index+3]] = data[data[current_index+1]] * data[data[current_index+2]]
-                current_index += 4
-                continue
-            elif operator == 3:
-                if not part_two:
-                    if first_time:
-                        data[data[current_index+1]] = phase_num
-                        first_time = False
-                    else:
-                        data[data[current_index+1]] = input_num
-                    current_index += 2
-                else:
-                    if first_time and loops==0:
-                        data[data[current_index+1]] = phase_num
-                        first_time = False
-                    else:
-                        if init_value:
-                            data[data[current_index+1]] = 0
-                            current_index += 2
-                        elif len(amp_outputs[amp_num-1]) == 0:
-                            broken_by_wait = True
-                        else:
-                            data[data[current_index+1]] = amp_outputs[amp_num-1].pop(0)
-                            current_index += 2
-                if broken_by_wait:
-                    break
-                else:
-                    continue
-            elif operator == 4:
-                data[0] = data[data[current_index+1]]
-                if part_two:
-                    amp_outputs[amp_num].append(data[0])
-                current_index += 2
-                continue
-            elif operator == 5:
-                if data[data[current_index+1]] != 0:
-                    current_index = data[data[current_index+2]]
-                else:
-                    current_index += 3
-                continue
-            elif operator == 6:
-                if not data[data[current_index+1]]:
-                    current_index = data[data[current_index+2]]
-                else:
-                    current_index += 3
-                continue
-            elif operator == 7:
-                data[data[current_index+3]] = int(data[data[current_index+1]]<data[data[current_index+2]])
-                current_index += 4
-                continue
-            elif operator == 8:
-                data[data[current_index+3]] = int(data[data[current_index+1]]==data[data[current_index+2]])
-                current_index += 4
-                continue
         operator_string = str(operator)
         while len(operator_string) < 5:
             operator_string = '0' + operator_string
@@ -93,18 +34,11 @@ def intcode(data, phase_num, input_num, amp_num, part_two=False, init_value=Fals
                     data[data[current_index+1]] = input_num
                 current_index += 2
             else:
-                if first_time and loops==0:
-                    data[data[current_index+1]] = phase_num
-                    first_time = False
+                if len(input_queue[amp_num]) == 0:
+                    broken_by_wait = True
                 else:
-                    if init_value:
-                        data[data[current_index+1]] = 0
-                        current_index += 2
-                    elif len(amp_outputs[amp_num-1]) == 0:
-                        broken_by_wait = True
-                    else:
-                        data[data[current_index+1]] = amp_outputs[amp_num-1].pop(0)
-                        current_index += 2
+                    data[data[current_index+1]] = input_queue[amp_num].pop(0)
+                    current_index += 2
             if broken_by_wait:
                 break
             else:
@@ -112,7 +46,7 @@ def intcode(data, phase_num, input_num, amp_num, part_two=False, init_value=Fals
         elif opcode == 4:
             data[0] = data[data[current_index+1]]
             if part_two:
-                amp_outputs[amp_num].append(data[0])
+                input_queue[(amp_num+1)%len(input_queue)].append(data[0])
             current_index += 2
             continue
         elif opcode == 5:
@@ -151,6 +85,8 @@ part_2_results = []
 for n in num_options_part_2:
     amp_finals = [None for i in range(5)]
     amp_outputs = [[] for i in range(5)]
+    input_queue = [[int(n[i])] for i in range(5)]
+    input_queue[0].append(0)
     first_loop = True
     indexes = [0,0,0,0,0]
     reps = 0
@@ -163,6 +99,5 @@ for n in num_options_part_2:
             else:
                 amp_finals[i] = intcode(nums.copy(), int(n[i]), 0, i, part_two=True, loops=reps)
         reps += 1
-        print(indexes)
     part_2_results.append(amp_finals[-1])
-    print(part_2_results)
+print(max(part_2_results))
