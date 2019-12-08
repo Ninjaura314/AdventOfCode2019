@@ -23,23 +23,23 @@ def parse_map(start_point):
     if start_point not in orbits.keys():
         return start_point
     current_list = {}
-    children = orbits[start_point]
     remove = []
     to_check.remove(start_point)
-    for child in children:
-        if not any(child in orbits[k] for k in to_check):
-            current_list[child] = parse_map(child)
-        else:
+    for child in orbits[start_point]:
+        if any(child in orbits[k] for k in to_check):
             remove.append(child)
     for r in remove:
         orbits[start_point].remove(child)
-    return {start_point: current_list}
-star_map = parse_map('COM')
+    for child in orbits[start_point]:
+        next_result = parse_map(child)
+        current_list[child] = next_result if type(next_result) is dict else None
+    return current_list
+star_map = {'COM': parse_map('COM')}
 def get_orbits(current_map, current_place):
-    if type(current_map) is str:
+    if current_map is None:
         return 0
     sum_of_orbits = 0
     for k in current_map.keys():
         sum_of_orbits += current_place + get_orbits(current_map[k], current_place+1)
     return sum_of_orbits
-print(get_orbits(star_map,1))
+print(get_orbits(star_map,0))
