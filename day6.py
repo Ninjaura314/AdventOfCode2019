@@ -43,3 +43,26 @@ def get_orbits(current_map, current_place):
         sum_of_orbits += current_place + get_orbits(current_map[k], current_place+1)
     return sum_of_orbits
 print(get_orbits(star_map,0))
+def parent_of(starting_point):
+    for k in orbits.keys():
+        if starting_point in orbits[k]:
+            parent = k
+            break
+    return parent
+def get_all_parents(starting_point):
+    parents = []
+    current_point = starting_point
+    while 'COM' not in parents:
+        current_point = parent_of(current_point)
+        parents.append(current_point)
+    return parents
+you_parents = get_all_parents('YOU')
+santa_parents = get_all_parents('SAN')
+possible_parents = []
+for y in you_parents:
+    if y in santa_parents:
+        possible_parents.append(y)
+sum_of_parents = []
+for p in possible_parents:
+    sum_of_parents.append(you_parents.index(p) + santa_parents.index(p))
+print(min(sum_of_parents))
