@@ -1,7 +1,6 @@
 with open('day7input.txt') as f:
     nums = [int(i) for i in f.read().split(',')]
 indexes = [0 for i in range(5)]
-amp_outputs = [[] for i in range(5)]
 input_queue = [[] for i in range(5)]
 def intcode(data, phase_num, input_num, amp_num, part_two=False, init_value=False, loops=0):
     current_index = indexes[amp_num]
@@ -84,7 +83,6 @@ print(max(results))
 part_2_results = []
 for n in num_options_part_2:
     amp_finals = [None for i in range(5)]
-    amp_outputs = [[] for i in range(5)]
     input_queue = [[int(n[i])] for i in range(5)]
     input_queue[0].append(0)
     first_loop = True
