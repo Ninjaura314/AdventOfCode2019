@@ -83,6 +83,7 @@ print(max(results))
 part_2_results = []
 for n in num_options_part_2:
     amp_finals = [None for i in range(5)]
+    amp_outputs = [[] for i in range(5)]
     input_queue = [[int(n[i])] for i in range(5)]
     input_queue[0].append(0)
     first_loop = True
